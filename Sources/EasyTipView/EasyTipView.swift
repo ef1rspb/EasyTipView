@@ -164,7 +164,8 @@ public extension EasyTipView {
         alpha = initialAlpha
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        addGestureRecognizer(tap)
+        tapRecognizer = tap
+        superview.addGestureRecognizer(tap)
         
         superview.addSubview(self)
         
@@ -186,7 +187,9 @@ public extension EasyTipView {
      - parameter completion: Completion block to be executed after the EasyTipView is dismissed.
      */
     func dismiss(withCompletion completion: (() -> ())? = nil){
-        
+        if let tapRecognizer {
+            superview?.removeGestureRecognizer(tapRecognizer)
+        }
         let damping = preferences.animating.springDamping
         let velocity = preferences.animating.springVelocity
         
@@ -312,6 +315,8 @@ open class EasyTipView: UIView {
     fileprivate var arrowTip = CGPoint.zero
     fileprivate(set) open var preferences: Preferences
     private let content: Content
+    
+    private var tapRecognizer: UITapGestureRecognizer?
     
     // MARK: - Lazy variables -
     
